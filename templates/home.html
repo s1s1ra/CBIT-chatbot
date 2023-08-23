@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chaitu</title>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/main.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+	<div class="container">
+		<div class="row mt-5">
+			<div class="col-md-6 offset-md-3 col-sm-6 offset-sm-3 col-12 comments-main rounded">
+        <div class="row comment-box-top rounded-bottom mb-4 pt-2">
+          <div class="col-md-2 col-sm-2 col-3 text-center logo">
+              <img id="logo_cbit" src="https://user-images.githubusercontent.com/46837462/73091261-17cbbf00-3f00-11ea-840d-2977bad0dc9f.png" class="rounded-circle" />
+          </div>
+			  		<div class="col-md-2 col-sm-2 col-2 text-center title">
+			  			<h3>CBIT CHATBOT</h3>
+			  		</div>
+				</div>
+        <ul class="p-0" id="chatbox">
+					<li>
+						<div class="row comments mb-2">
+							<div class="col-md-2 col-sm-2 col-3 text-center user-img">
+						    	<img id="profile-photo" src="http://nicesnippets.com/demo/man.png" class="rounded-circle" />
+							</div>
+							<div class="col-md-9 col-sm-9 col-9 comment rounded mb-2">
+								<h4 class="m-0"><a href="#">Chaitu</a></h4>
+							    <time class="text-white ml-3" id="time"></time>
+							    <p class="mb-0 text-white">Hey, I'm Chaitu! How may I help you?</p>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<div class="row comment-box-main p-3 rounded-bottom">
+			  		<div id = "userInput" class="col-md-9 col-sm-9 col-9 pr-0 comment-box">
+					  <input id="textInput" type="text" class="form-control" placeholder="Enter msg here...." />
+			  		</div>
+			  		<div class="col-md-3 col-sm-2 col-2 pl-0 text-center send-btn">
+			  			<button class="btn btn-info">Send</button>
+			  		</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  <script>
+    var d = new Date();
+    document.getElementById("time").innerHTML = d.toUTCString();
+  </script>
+  <script>
+    function getBotResponse() {
+      var rawText = $("#textInput").val();
+      var userHtml = '<ul class="p-0">'+'\n'+
+          '<li>'+'\n'+
+            '<div class="row comments mb-2">'+'\n'+
+              '<div class="col-md-8 offset-md-3 col-sm-9 col-9 comment rounded mb-2">'+'\n'+
+                '<h4 class="m-0"><a href="#">You</a></h4>'+'\n'+
+                  '<time class="text-white ml-3" id="time"></time>'+'\n'+
+                  '<p class="mb-0 text-white">'+ rawText + '</p>' +'\n'+
+              '</div>'+'\n'+
+            '</div>'+'\n'+
+          '</li>'+'\n'+'</ul>';
+      $("#textInput").val("");
+      $("#chatbox").append(userHtml);
+      document
+        .getElementById("userInput")
+        .scrollIntoView({ block: "start", behavior: "smooth" });
+      $.get("/get", { msg: rawText }).done(function(data) {
+        var botHtml = '<li>' +'\n'+
+          '<div class="row comments mb-2">'+'\n'+
+            '<div class="col-md-2 col-sm-2 col-3 text-center user-img">'+'\n'+
+                '<img id="profile-photo" src="http://nicesnippets.com/demo/man.png" class="rounded-circle" />'+'\n'+
+            '</div>'+'\n'+
+            '<div class="col-md-9 col-sm-9 col-9 comment rounded mb-2">'+'\n'+
+              '<h4 class="m-0"><a href="#">Chaitu</a></h4>'+'\n'+
+                '<time class="text-white ml-3" id="time"></time>'+'\n'+
+                '<p class="mb-0 text-white">' + data + '</p>' +'\n'+
+            '</div>'+'\n'+
+          '</div>'+'\n'+
+        '</li>';
+        $("#chatbox").append(botHtml);
+        document
+          .getElementById("userInput")
+          .scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+    }
+    $("#textInput").keypress(function(e) {
+      if (e.which == 13) {
+        getBotResponse();
+      }
+    });
+  </script>
+  </body>
+</html>
